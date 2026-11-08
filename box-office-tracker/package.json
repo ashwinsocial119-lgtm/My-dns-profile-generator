@@ -1,0 +1,16 @@
+{
+  "name": "box-office-tracker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Near-real-time box office tracker for up to 3 films (Indian + international). Web app + iPhone widget.",
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "build:widget": "node scripts/build-widget.mjs",
+    "test": "node --test test/*.test.js",
+    "smoke": "node scripts/smoke.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

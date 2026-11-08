@@ -1,5 +1,7 @@
 # Apple DNS Profile Generator
 
+> **Also in this repo:** [🎬 Box Office Tracker](box-office-tracker/): a near-real-time box office tracker for up to 3 Indian or international films, as a dark-mode web app and an iPhone home-screen widget.
+
 A web-based tool to generate Apple configuration profiles for encrypted DNS (DNS over HTTPS and DNS over TLS). Enable system-wide encrypted DNS on your iPhone, iPad, Mac, and Apple TV.
 
 ## Features

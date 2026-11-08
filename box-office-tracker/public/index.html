@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Box Office Tracker</title>
+    <meta name="description" content="Near-real-time box office for up to three films — Indian and international — from Sacnilk, The Numbers, Box Office Mojo and Wikipedia." />
+    <meta name="theme-color" content="#0a0a0f" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#0a0a0f" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Box Office" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" type="image/svg+xml" href="icons/icon.svg" />
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+    <link rel="stylesheet" href="css/app.css" />
+    <script>
+      // Apply the saved theme before first paint (no flash). Default: dark.
+      try {
+        var t = localStorage.getItem("bot.theme") || "dark";
+        document.documentElement.setAttribute("data-theme", t);
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <div id="ptr" class="ptr" aria-hidden="true"><span class="ptr__icon">↓</span></div>
+
+    <header class="top">
+      <div class="top__row">
+        <div class="brand">
+          <img class="brand__mark" src="icons/icon.svg" alt="" width="36" height="36" />
+          <div>
+            <h1 class="brand__title">Box Office</h1>
+            <p class="brand__sub" id="status" aria-live="polite">Live tracker</p>
+          </div>
+        </div>
+        <div class="top__actions">
+          <button class="icon-btn" id="settingsBtn" aria-label="Settings" title="Settings">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>
+          </button>
+          <button class="icon-btn icon-btn--primary" id="refreshBtn" aria-label="Refresh now" title="Refresh now">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <form class="search" id="searchForm" role="search" autocomplete="off">
+        <svg class="search__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="searchInput" type="search" inputmode="search" enterkeyhint="search" placeholder="Search any film…" aria-label="Search for a film" aria-controls="results" aria-autocomplete="list" />
+        <span class="search__count" id="slotCount">0/3</span>
+      </form>
+      <ul class="results" id="results" role="listbox" hidden></ul>
+    </header>
+
+    <main id="films" class="films" aria-live="polite"></main>
+
+    <section class="empty" id="empty" hidden>
+      <div class="empty__art" aria-hidden="true">🎬</div>
+      <h2>Track up to 3 films</h2>
+      <p>Search any recent Indian or international release. Collections from Sacnilk, The Numbers, Box Office Mojo and Wikipedia appear side by side, refresh every hour, and update whenever you pull down.</p>
+    </section>
+
+    <div class="banner" id="banner" hidden></div>
+
+    <footer class="foot">
+      <p>Figures are trade estimates and differ between sources. India figures from Sacnilk are <em>net</em> (after tax) unless marked gross. Not affiliated with any source.</p>
+    </footer>
+
+    <dialog id="settings" class="sheet">
+      <form method="dialog" class="sheet__inner">
+        <div class="sheet__head">
+          <h2>Settings</h2>
+          <button class="text-btn" value="close">Done</button>
+        </div>
+
+        <fieldset class="field">
+          <legend>Appearance</legend>
+          <div class="seg" role="radiogroup" id="themeSeg">
+            <label><input type="radio" name="theme" value="dark" /><span>Dark</span></label>
+            <label><input type="radio" name="theme" value="auto" /><span>Auto</span></label>
+            <label><input type="radio" name="theme" value="light" /><span>Light</span></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="field">
+          <legend>Headline currency</legend>
+          <div class="seg" role="radiogroup" id="curSeg">
+            <label><input type="radio" name="cur" value="auto" /><span>Film's home</span></label>
+            <label><input type="radio" name="cur" value="INR" /><span>₹ INR</span></label>
+            <label><input type="radio" name="cur" value="USD" /><span>$ USD</span></label>
+          </div>
+          <p class="hint" id="fxHint"></p>
+        </fieldset>
+
+        <fieldset class="field">
+          <legend>iPhone home-screen widget</legend>
+          <p class="hint">Install the free <b>Scriptable</b> app, tap <b>Copy widget script</b>, then in Scriptable tap <b>+</b>, paste and save. Add a Scriptable widget to your home screen and choose the script.</p>
+          <button type="button" class="btn" id="copyWidgetBtn">Copy widget script</button>
+          <p class="hint">Then bring your films across: tap below, run the script in Scriptable and choose <b>Import</b>.</p>
+          <button type="button" class="btn" id="exportBtn">Copy my films for the widget</button>
+          <p class="hint"><a href="widget/Box-Office-Tracker.js" download>Download the script file</a> instead (save it to iCloud Drive › Scriptable).</p>
+        </fieldset>
+
+        <fieldset class="field">
+          <legend>Sources</legend>
+          <ul class="src-list" id="srcList"></ul>
+        </fieldset>
+      </form>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" hidden></div>
+
+    <script type="module" src="js/app.js"></script>
+  </body>
+</html>
