@@ -50,6 +50,8 @@ The card names the source used, and every source row links to its original page.
    - Lock Screen: add a Scriptable **rectangular** widget to show your first film.
    - Optional: set *When Interacting* to **Run Script** to open the full view when you tap.
 
+> **Don't use Scriptable's own "Add to Home Screen" option** (in the script's settings). That makes a Safari bookmark served from a local port, and recent iOS versions block it with *"Safari cannot open the page… not allowed to use network port"*. The widget is added from the iOS widget gallery as described in step 4. If you also want an app-style icon that opens the full view, use the **Shortcuts** app: new shortcut → add Scriptable's **Run Script** action → choose *Box Office Tracker* → Share → **Add to Home Screen**.
+
 The widget asks iOS to refresh every 60 minutes. iOS controls the exact timing, so it can sometimes be later. Running the script (or tapping the widget) always fetches fresh numbers. To make a tap open your web app instead, set `webAppUrl` in the `CONFIG` block near the top of the script.
 
 ---
